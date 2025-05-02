@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + Vue + TS</title>
+  <link rel="modulepreload" href="/assets/three-d-viz-d74eeaa00b8909e3.js" crossorigin="anonymous" integrity="sha384-1NKbM4ttS4Q9kg1dfQ/gDM+k2xNh0XFovD9barQIW8vG5JAkEBe8mAYeeA6B+3NV"><link rel="modulepreload" href="/assets/5867a9a7f280ebe8-initializer.mjs" crossorigin="anonymous" integrity="sha384-aVuFxu2pf9hpJbbyMoaDre0Sh/MafMqpcgTpAbuFGiErTzY8TB2K62TzRMGe+DaE"><link rel="preload" href="/assets/three-d-viz-d74eeaa00b8909e3_bg.wasm" crossorigin="anonymous" integrity="sha384-qQZNEPmqZ/ImCdOLTSEHqbFd5t34TiS4es+mqZVSc7yvxksEv9SkTEkWTl8IO0Ge" as="fetch" type="application/wasm"></head>
+  <body>
+    
+<script type="module">
+async function __trunkInitializer(init, source, sourceSize, initializer, initWithObject) {
+  if (initializer === undefined) {
+    return await init(initWithObject ? { module_or_path: source } : source);
+  }
+
+  const {
+    onStart, onProgress, onComplete, onSuccess, onFailure
+  } = initializer;
+
+  onStart?.();
+
+  const response = fetch(source)
+      .then((response) => {
+        const reader = response.body.getReader();
+        const headers = response.headers;
+        const status = response.status;
+        const statusText = response.statusText;
+
+        const total = sourceSize;
+        let current = 0;
+
+        const stream = new ReadableStream({
+          start(controller) {
+            function push() {
+              reader.read().then(({done, value}) => {
+                if (done) {
+                  onProgress?.({current: total, total});
+                  controller.close();
+                  return;
+                }
+
+                current += value.byteLength;
+                onProgress?.({current, total});
+                controller.enqueue(value);
+                push();
+              });
+            }
+
+            push();
+          },
+        });
+
+        return {
+          stream, init: {
+            headers, status, statusText
+          }
+        };
+      })
+      .then(({stream, init}) =>
+          new Response(stream, init),
+      );
+
+  return init(initWithObject ? { module_or_path: response } : response)
+      .then((value) => {
+        onComplete?.();
+        onSuccess?.(value);
+        return value;
+      }, (reason) => {
+        onComplete?.();
+        onFailure?.(reason);
+        return reason;
+      });
+}
+
+
+import init, * as bindings from '/assets/three-d-viz-d74eeaa00b8909e3.js';
+import initializer from '/assets/5867a9a7f280ebe8-initializer.mjs';
+
+const wasm = await __trunkInitializer(init, '/assets/three-d-viz-d74eeaa00b8909e3_bg.wasm', 26923681, initializer(), true);
+
+
+window.wasmBindings = bindings;
+
+
+dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
+
+</script>
+    <div id="app"></div>
+    <script type="module" src="frontend/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+canvas {
+  display: block;
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
+.line {
+  transition: all 0.2s ease;
+}
+
+.hamburger.open .line1 {
+  transform: rotate(45deg) translateY(10px) translateX(10px);
+}
+
+.hamburger.open .line2 {
+  opacity: 0;
+  transition: none;
+}
+
+.hamburger.open .line3 {
+  transform: rotate(-45deg) translateY(-10px) translateX(10px);
+}
+
+#main-overlay {
+  @apply w-10.5 h-10.5 m-4 overflow-hidden bg-gray-800/50;
+  transition: width 0.1s linear, height 0.1s linear;
+}
+
+#main-overlay.open {
+  @apply min-w-140;
+  width: inherit;
+  height: calc(100% - var(--spacing) * 8);
+  transition: width 0.1s linear, height 0.1s linear;
+}
